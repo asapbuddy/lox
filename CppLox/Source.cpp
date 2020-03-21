@@ -3,8 +3,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Core/Scanner.h"
-#include "Core/Token.h"
+#include "Core/Scanner.hpp"
+#include "Core/Token.hpp"
 
 using namespace std;
 
@@ -16,11 +16,11 @@ void report(int line, string where, string message);
 
 bool hadError = false;
 
-int main(int argc, char** argv)
+int main(int argc, char** argv) noexcept
 {
     if(argc < 1)
     {
-        printf("Usage: cpplox [script]");
+        cout << "Usage: cpplox [script]" << endl;
         return -1;
     }
     if(argc == 2)
@@ -35,9 +35,8 @@ void run_file(char* file_path)
     if(std::filesystem::exists(file_path))
     {
         ifstream ifs(file_path);
-        string result((istreambuf_iterator<char>(ifs)) //TODO need to detailed explanation about (istreambuf())
-                      ,
-                      istreambuf_iterator<char>());
+        istreambuf_iterator<char> ifs_bufit(ifs);
+        string result(ifs_bufit, istreambuf_iterator<char>());
         run(result);
     }
 }

@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\Scanner.cpp" />
+    <ClCompile Include="Core\ScannerError.cpp" />
     <ClCompile Include="Core\Token.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
@@ -150,8 +151,11 @@
     <None Include="Source.lox" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Scanner.h" />
-    <ClInclude Include="Core\Token.h" />
+    <ClInclude Include="Core\IError.hpp" />
+    <ClInclude Include="Core\Scanner.hpp" />
+    <ClInclude Include="Core\ScannerError.h" />
+    <ClInclude Include="Core\Token.hpp" />
+    <ClInclude Include="Core\TokenType.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

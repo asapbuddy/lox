@@ -25,6 +25,9 @@
       <Filter>Core</Filter>
     </ClCompile>
     <ClCompile Include="Core\Token.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ScannerError.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -34,10 +37,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Scanner.h">
+    <ClInclude Include="Core\TokenType.hpp">
       <Filter>Core</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Token.h">
+    <ClInclude Include="Core\Token.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Scanner.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\IError.hpp">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ScannerError.h">
       <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
