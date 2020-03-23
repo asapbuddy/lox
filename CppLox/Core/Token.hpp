@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <ostream>
 #include "TokenType.hpp"
+#include <iomanip>
 
 using std::string;
 
@@ -12,7 +13,7 @@ class Token
 {
 
 public:
-    explicit Token(TokenType type, string& lexeme, void* literal, int line)
+    Token(TokenType type, string& lexeme, string& literal, int line)
         : type_(type)
         , lexeme_(lexeme)
         , literal_(literal)
@@ -23,15 +24,15 @@ public:
     friend std::ostream& operator<<(std::ostream& os, const Token& obj)
     {
         return os
-               << "type_: " << obj.type_
-               << " lexeme_: " << obj.lexeme_
-               << " literal_: " << obj.literal_
-               << " line_: " << obj.line_;
+               << "[Token] type: " << obj.type_
+               << " lexeme: [" << obj.lexeme_ << "]"
+               << " literal: [" << obj.literal_ << "]"
+               << " line: " << obj.line_;
     }
 
 private:
     const TokenType type_;
     const string lexeme_;
-    const void* literal_ = nullptr;
+    const string literal_ = nullptr;
     const int line_ = -1;
 };

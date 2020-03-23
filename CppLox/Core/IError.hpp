@@ -5,5 +5,5 @@ struct IError
 {
     virtual ~IError() = default;
 
-    virtual std::string what() = 0;
+    virtual void what(std::ostream&) const = 0;
 };

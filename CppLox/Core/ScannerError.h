@@ -6,24 +6,24 @@
 class ScannerError : public IError
 {
 public:
-    ScannerError(int line, std::string desc)
+    ScannerError(unsigned line, std::string desc)
         : line_(line)
         , description_(std::move(desc))
     {
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const ScannerError& obj)
+    void what(std::ostream& os) const override
     {
-        return os
-               << "[ScannerError] "
-               << " line_: " << obj.line_
-               << " description_: " << obj.description_;
+        os
+            << "[ScannerError] "
+            << " line_: " << line_
+            << " description_: " << description_
+            << std::endl;
     }
 
-    std::string what() override;
-    ~ScannerError() = default;
+    ~ScannerError() override = default;
 
 private:
-    const int line_ = -1;
+    unsigned line_ = 0;
     std::string description_;
 };

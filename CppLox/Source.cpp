@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 #include "Core/Scanner.hpp"
 #include "Core/Token.hpp"
@@ -11,10 +12,6 @@ using namespace std;
 void run_file(char* file_path);
 void run_prompt();
 void run(string);
-void error(int line, string message);
-void report(int line, string where, string message);
-
-bool hadError = false;
 
 int main(int argc, char** argv) noexcept
 {
@@ -35,8 +32,8 @@ void run_file(char* file_path)
     if(std::filesystem::exists(file_path))
     {
         ifstream ifs(file_path);
-        istreambuf_iterator<char> ifs_bufit(ifs);
-        string result(ifs_bufit, istreambuf_iterator<char>());
+        const istreambuf_iterator<char> ifs_begin(ifs);
+        string result(ifs_begin, istreambuf_iterator<char>());
         run(result);
     }
 }
@@ -54,19 +51,11 @@ void run_prompt()
 
 void run(string source)
 {
-    Scanner scanner(source);
+    Scanner scanner(std::move(source));
     vector<Token> tokens = scanner.scan_tokens();
-    for(auto token : tokens)
-        cout << token << endl;
-}
+    auto errors = scanner.get_errors();
+    if(!errors.empty())
+        std::for_each(errors.begin(), errors.end(), [](auto err) { err->what(cerr); });
 
-void error(int line, string message)
-{
-    report(line, "", message);
-}
-
-void report(int line, string where, string message)
-{
-    cerr << "[line " << line << "] Error" + where + ": " + message << endl;
-    hadError = true;
+    std::for_each(tokens.begin(), tokens.end(), [](auto token) { cout << token << endl; });
 }
