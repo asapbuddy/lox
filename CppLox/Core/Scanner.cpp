@@ -191,6 +191,11 @@ void Scanner::scanToken()
             do
             {
                 advance();
+                if(peek() == '\n')
+                {
+                    ++line_;
+                    continue;
+                }
                 if(peek() == '*')
                 {
                     advance();
