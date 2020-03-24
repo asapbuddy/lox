@@ -1,2 +1,9 @@
+// Single line comment
+/*
+*
+* Test multiline comments
+*
+*/
+var del/=1.0
 var str = "qwerq" // test comment
 var average = (str + str)/2

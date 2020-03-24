@@ -11,9 +11,9 @@ using namespace std;
 
 void run_file(char* file_path);
 void run_prompt();
-void run(string);
+void run(const string&);
 
-int main(int argc, char** argv) noexcept
+int main(int argc, char** argv)
 {
     if(argc < 1)
     {
@@ -33,7 +33,7 @@ void run_file(char* file_path)
     {
         ifstream ifs(file_path);
         const istreambuf_iterator<char> ifs_begin(ifs);
-        string result(ifs_begin, istreambuf_iterator<char>());
+        const string result(ifs_begin, istreambuf_iterator<char>());
         run(result);
     }
 }
@@ -49,11 +49,12 @@ void run_prompt()
     }
 }
 
-void run(string source)
+void run(const string& source)
 {
-    Scanner scanner(std::move(source));
+    Scanner scanner(source);
     vector<Token> tokens = scanner.scan_tokens();
     auto errors = scanner.get_errors();
+
     if(!errors.empty())
         std::for_each(errors.begin(), errors.end(), [](auto err) { err->what(cerr); });
 

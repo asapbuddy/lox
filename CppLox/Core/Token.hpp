@@ -2,21 +2,18 @@
 #include <ostream>
 #include "TokenType.hpp"
 #include <iomanip>
+#include <utility>
 
 using std::string;
 
-///
-/// TODO Token.literal_ void*
-/// need to fix Token class and operator <<
-///
 class Token
 {
 
 public:
-    Token(TokenType type, string& lexeme, string& literal, int line)
+    Token(TokenType type, string lexeme, string literal, int line)
         : type_(type)
-        , lexeme_(lexeme)
-        , literal_(literal)
+        , lexeme_(std::move(lexeme))
+        , literal_(std::move(literal))
         , line_(line)
     {
     }

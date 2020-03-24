@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include <utility>
 #include "IError.hpp"
 #include <ostream>
+#include <utility>
 
 class ScannerError : public IError
 {
@@ -16,8 +16,8 @@ public:
     {
         os
             << "[ScannerError] "
-            << " line_: " << line_
-            << " description_: " << description_
+            << " line: " << line_
+            << " error: " << description_
             << std::endl;
     }
 

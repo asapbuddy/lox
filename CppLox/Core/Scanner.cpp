@@ -13,12 +13,12 @@ std::vector<Token> Scanner::scan_tokens()
     return tokens_;
 }
 
-std::vector<IError*> Scanner::get_errors()
+std::vector<IError*> Scanner::get_errors() const
 {
     return errors_;
 }
 
-bool Scanner::isAtEnd()
+bool Scanner::isAtEnd() const
 {
     return current_ >= source_.size();
 }
@@ -29,18 +29,18 @@ void Scanner::addToken(TokenType type)
     addToken(type, str);
 }
 
-void Scanner::addToken(TokenType type, string& literal)
+void Scanner::addToken(TokenType type, const string& literal)
 {
     string text = source_.substr(start_, current_ - start_);
     tokens_.emplace_back(type, text, literal, line_);
 }
 
-void Scanner::addError(string text)
+void Scanner::addError(const string& text)
 {
-    //errors_.push_back(std::make_unique<ScannerError>(line_, text));
+    errors_.push_back(new ScannerError(line_, text));
 }
 
-char Scanner::peek()
+char Scanner::peek() const
 {
     return isAtEnd() ? '\0' : source_.at(current_);
 }
@@ -69,7 +69,7 @@ void Scanner::add_string()
     addToken(TokenType::STRING, value);
 }
 
-char Scanner::peekNext()
+char Scanner::peekNext() const
 {
     if(current_ + 1 >= source_.length())
         return '\0';
@@ -89,7 +89,7 @@ void Scanner::add_number()
         while(isDigit(peek()))
             advance();
     }
-    string literal = source_.substr(start_, current_);
+    const auto literal = source_.substr(start_, current_ - start_);
     addToken(TokenType::NUMBER, literal);
 }
 
@@ -108,7 +108,7 @@ void Scanner::add_identifier()
     while(isAlphaNumeric(peek()))
         advance();
 
-    string text = source_.substr(start_, current_ - start_);
+    const auto text = source_.substr(start_, current_ - start_);
     const auto it = keywords_.find(text);
     TokenType type = TokenType::IDENTIFIER;
     if(it != keywords_.end())
@@ -183,16 +183,38 @@ void Scanner::scanToken()
         {
             while(peek() != '\n' && !isAtEnd())
                 advance();
+            break;
+        }
+        if(match('*'))
+        {
+
+            do
+            {
+                advance();
+                if(peek() == '*')
+                {
+                    advance();
+                    if(peek() == '/')
+                    {
+                        advance();
+                        return;
+                    }
+                }
+            } while(!isAtEnd());
+
+            addError("Multiline comments must be closed");
+            break;
         }
         else if(isAlpha(c))
         {
             add_identifier();
+            break;
         }
         else
         {
             addToken(TokenType::SLASH);
+            break;
         }
-        break;
     }
     case '"':
         add_string();

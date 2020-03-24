@@ -5,35 +5,24 @@
 #include "Token.hpp"
 #include "IError.hpp"
 #include <unordered_map>
-#include "ScannerError.h"
 
 class Scanner
 {
 public:
-    /**
-     * \brief Store source
-     * \param source contains full source code of file
-     */
+    Scanner() = delete;
     Scanner(string source)
         : source_(std::move(source))
     {
-        errors_.emplace_back(new ScannerError(line_, "TEST ERROR"));
     }
-
-    Scanner() = delete;
-
-    /**
-     * \brief parse source code
-     * \return all parsed tokens
-     */
-    std::vector<Token> scan_tokens();
-    std::vector<IError*> get_errors();
 
     ~Scanner()
     {
         for(auto* error : errors_)
             delete error;
     }
+
+    std::vector<Token> scan_tokens();
+    std::vector<IError*> get_errors() const;
 
 private:
     unsigned start_ = 0;
@@ -45,22 +34,24 @@ private:
     std::vector<IError*> errors_;
 
     // Helpers
-    bool isAtEnd();
+    bool isAtEnd() const;
     void addToken(TokenType);
-    void addToken(TokenType, string&);
-    void addError(string);
-    char peek();
+    void addToken(TokenType, const string&);
+    void addError(const string&);
+    char peek() const;
 
     void add_string();
-    char peekNext();
+    char peekNext() const;
     void add_number();
     bool isDigit(char c);
     bool isAlphaNumeric(char peek);
     void add_identifier();
     bool isAlpha(char c);
+
     // Core
     void scanToken();
     char advance();
+
     bool match(char expected);
 
     const std::unordered_map<string, TokenType>
