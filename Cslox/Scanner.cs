@@ -30,31 +30,85 @@ namespace Cslox
         private void ScanToken()
         {
             var ch = Advance();
-            var tokenType = ch switch
+
+            TokenType tokenType = TokenType.Unexpected;
+            switch (ch)
             {
-                '(' => TokenType.LEFT_PAREN,
-                ')' => TokenType.RIGHT_PAREN,
-                '{' => TokenType.LEFT_BRACE,
-                '}' => TokenType.RIGHT_BRACE,
-                ',' => TokenType.COMMA,
-                '.' => TokenType.DOT,
-                '-' => TokenType.MINUS,
-                '+' => TokenType.PLUS,
-                ';' => TokenType.SEMICOLON,
-                '*' => TokenType.STAR,
-                '!' => Match('=') ? TokenType.BANG_EQUAL : TokenType.BANG,
-                '=' => Match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL,
-                '<' => Match('=') ? TokenType.LESS_EQUAL : TokenType.LESS,
-                '>' => Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER,
+                case '(':
+                    tokenType = TokenType.LEFT_PAREN;
+                    break;
+                case ')':
+                    tokenType = TokenType.RIGHT_PAREN;
+                    break;
+                case '{':
+                    tokenType = TokenType.LEFT_BRACE;
+                    break;
+                case '}':
+                    tokenType = TokenType.RIGHT_BRACE;
+                    break;
+                case ',':
+                    tokenType = TokenType.COMMA;
+                    break;
+                case '.':
+                    tokenType = TokenType.DOT;
+                    break;
+                case '-':
+                    tokenType = TokenType.MINUS;
+                    break;
+                case '+':
+                    tokenType = TokenType.PLUS;
+                    break;
+                case ';':
+                    tokenType = TokenType.SEMICOLON;
+                    break;
+                case '*':
+                    tokenType = TokenType.STAR;
+                    break;
+                case '!':
+                    tokenType = Match('=') ? TokenType.BANG_EQUAL : TokenType.BANG;
+                    break;
+                case '=':
+                    tokenType = Match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL;
+                    break;
+                case '<':
+                    tokenType = Match('=') ? TokenType.LESS_EQUAL : TokenType.LESS;
+                    break;
+                case '>':
+                    tokenType = Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER;
+                    break;
+                case '/':
+                {
+                    if (Match('/'))
+                    {
+                        while (Peek() != '\n' && !IsAtEnd())
+                            Advance();
+                        return;
+                    }
+
+                    tokenType = TokenType.SLASH;
 
 
-                _ => TokenType.Unexpected
-            };
+                    break;
+                }
+
+                case ' ':
+                case '\r':
+                case '\t':
+                    return;
+                case '\n':
+                    _line++;
+                    break;
+            }
 
             if (tokenType == TokenType.Unexpected)
                 Error.ReportError(_line, _current, "Unexpected symbol");
             else
                 AddToken(tokenType);
+        }
+
+        private char Peek()
+        {
+            return IsAtEnd() ? '\0' : _source[_current];
         }
 
         private bool Match(char expected)
