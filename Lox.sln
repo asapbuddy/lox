@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CppLox", "CppLox\CppLox.vcxproj", "{D75E3008-4423-4217-87F9-5C5AB1747590}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslox", "Cslox\Cslox.csproj", "{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{D75E3008-4423-4217-87F9-5C5AB1747590}.Release|x64.Build.0 = Release|x64
 		{D75E3008-4423-4217-87F9-5C5AB1747590}.Release|x86.ActiveCfg = Release|Win32
 		{D75E3008-4423-4217-87F9-5C5AB1747590}.Release|x86.Build.0 = Release|Win32
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Debug|x64.Build.0 = Debug|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Debug|x86.Build.0 = Debug|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Release|x64.ActiveCfg = Release|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Release|x64.Build.0 = Release|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Release|x86.ActiveCfg = Release|Any CPU
+		{3B7A646F-E40F-4DED-9EE4-AA1E9BE74B45}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
