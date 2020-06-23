@@ -121,6 +121,31 @@ namespace Cslox
                 AddToken(tokenType);
         }
 
+        private void CreateNumber()
+        {
+            while (IsDigit(Peek()))
+                Advance();
+            if (Peek() == '.' && IsDigit(PeekNext()))
+            {
+                Advance();
+                while (IsDigit(Peek())) Advance();
+            }
+
+            if (double.TryParse(_source.Substring(_start, _current - _start), out var literal))
+                AddToken(TokenType.NUMBER, literal);
+            else
+                Error.ReportError(_source.Substring(_start, _current - _start), _line, _current,
+                    "Unexpected symbol");
+        }
+
+        private char PeekNext()
+        {
+            if (_current + 1 >= _source.Length) return '\0';
+            return _source[_current + 1];
+        }
+
+        private bool IsDigit(char ch) => ch >= '0' && ch <= '9';
+
 
         private void CreateString()
         {
