@@ -45,6 +45,7 @@ namespace Cslox
         TRUE,
         VAR,
         WHILE,
-        EOF
+        EOF,
+        Unexpected
     }
 }

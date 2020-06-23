@@ -22,9 +22,9 @@ namespace Cslox
 
         private static void RunPrompt()
         {
+            Console.Clear();
             while (true)
             {
-                Console.Clear();
                 Console.Write(">");
                 var sourceCode = Console.ReadLine();
                 Run(sourceCode);
@@ -40,7 +40,7 @@ namespace Cslox
         private static void Run(in string source)
         {
             Scanner scanner = new Scanner(source);
-            IEnumerable<Token> tokens = scanner.ScanTokens(TODO);
+            IEnumerable<Token> tokens = scanner.ScanTokens();
             foreach (var token in tokens)
             {
                 Console.WriteLine(token);
