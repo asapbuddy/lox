@@ -4,14 +4,17 @@ namespace Cslox
 {
     public class Error
     {
-        public static void ReportError(int line, int position, in String message)
+        public static void ReportError(in string line, int lineNumber, int position, in String message)
         {
-            Report(line, position, message);
+            Report(line, lineNumber, position, message);
         }
 
-        private static void Report(in int line, int where, in string message)
+        private static void Report(in string line, int lineNumber, int where, in string message)
         {
-            Console.WriteLine($"[line {line}] Error {message} at position {where}");
+            Console.WriteLine($"Error {message} [line {lineNumber} at position {where}]");
+            Console.WriteLine(line);
+            Console.CursorLeft = where;
+            Console.WriteLine("^");
         }
     }
 }

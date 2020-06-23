@@ -15,7 +15,7 @@ namespace Cslox
             }
 
             if (args.Length == 1)
-                RunFile(args[1]);
+                RunFile(args[0]);
             else
                 RunPrompt();
         }

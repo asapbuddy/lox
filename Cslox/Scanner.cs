@@ -90,6 +90,9 @@ namespace Cslox
 
                     break;
                 }
+                case '"':
+                    CreateString();
+                    break;
 
                 case ' ':
                 case '\r':
@@ -98,12 +101,45 @@ namespace Cslox
                 case '\n':
                     _line++;
                     break;
+                default:
+                    if (IsDigit(ch))
+                    {
+                        CreateNumber();
+                    }
+                    else
+                    {
+                        tokenType = TokenType.Unexpected;
+                    }
+
+                    break;
             }
 
             if (tokenType == TokenType.Unexpected)
-                Error.ReportError(_line, _current, "Unexpected symbol");
+                Error.ReportError(_source.Substring(_start, _current - _start), _line, _current,
+                    "Unexpected symbol");
             else
                 AddToken(tokenType);
+        }
+
+
+        private void CreateString()
+        {
+            while (Peek() != '"' && !IsAtEnd())
+            {
+                if (Peek() == '\n') _line++;
+                Advance();
+            }
+
+            if (IsAtEnd())
+            {
+                Error.ReportError(_source.Substring(_start, _source.IndexOf('\n', _start) - _start), _line, _current,
+                    "Unterminated string");
+                return;
+            }
+
+            Advance();
+            var value = _source.Substring(_start + 1, _current - _start);
+            AddToken(TokenType.STRING, value);
         }
 
         private char Peek()
