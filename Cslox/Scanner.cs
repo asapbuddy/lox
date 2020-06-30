@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Cslox
 {
@@ -7,12 +8,33 @@ namespace Cslox
     {
         private readonly string _source;
         private readonly List<Token> _tokens = new List<Token>();
-
+        private readonly Dictionary<string, TokenType> _keywords = new Dictionary<string, TokenType>();
         private int _start = 0, _current = 0, _line = 1;
 
         public Scanner(in string source)
         {
             _source = source;
+            InitKeywords();
+        }
+
+        private void InitKeywords()
+        {
+            _keywords.Add("and", TokenType.AND);
+            _keywords.Add("class", TokenType.CLASS);
+            _keywords.Add("else", TokenType.ELSE);
+            _keywords.Add("false", TokenType.FALSE);
+            _keywords.Add("for", TokenType.FOR);
+            _keywords.Add("fun", TokenType.FUN);
+            _keywords.Add("if", TokenType.IF);
+            _keywords.Add("nil", TokenType.NIL);
+            _keywords.Add("or", TokenType.OR);
+            _keywords.Add("print", TokenType.PRINT);
+            _keywords.Add("return", TokenType.RETURN);
+            _keywords.Add("super", TokenType.SUPER);
+            _keywords.Add("this", TokenType.THIS);
+            _keywords.Add("true", TokenType.TRUE);
+            _keywords.Add("var", TokenType.VAR);
+            _keywords.Add("while", TokenType.WHILE);
         }
 
         public IEnumerable<Token> ScanTokens()
@@ -23,7 +45,7 @@ namespace Cslox
                 ScanToken();
             }
 
-            _tokens.Add(new Token(TokenType.EOF, "", null, _line));
+            _tokens.Add(new Token(TokenType.EOF, "", null));
             return _tokens;
         }
 
@@ -35,46 +57,46 @@ namespace Cslox
             switch (ch)
             {
                 case '(':
-                    tokenType = TokenType.LEFT_PAREN;
+                    AddToken(TokenType.LEFT_PAREN);
                     break;
                 case ')':
-                    tokenType = TokenType.RIGHT_PAREN;
+                    AddToken(TokenType.RIGHT_PAREN);
                     break;
                 case '{':
-                    tokenType = TokenType.LEFT_BRACE;
+                    AddToken(TokenType.LEFT_BRACE);
                     break;
                 case '}':
-                    tokenType = TokenType.RIGHT_BRACE;
+                    AddToken(TokenType.RIGHT_BRACE);
                     break;
                 case ',':
-                    tokenType = TokenType.COMMA;
+                    AddToken(TokenType.COMMA);
                     break;
                 case '.':
-                    tokenType = TokenType.DOT;
+                    AddToken(TokenType.DOT);
                     break;
                 case '-':
-                    tokenType = TokenType.MINUS;
+                    AddToken(TokenType.MINUS);
                     break;
                 case '+':
-                    tokenType = TokenType.PLUS;
+                    AddToken(TokenType.PLUS);
                     break;
                 case ';':
-                    tokenType = TokenType.SEMICOLON;
+                    AddToken(TokenType.SEMICOLON);
                     break;
                 case '*':
-                    tokenType = TokenType.STAR;
+                    AddToken(TokenType.STAR);
                     break;
                 case '!':
-                    tokenType = Match('=') ? TokenType.BANG_EQUAL : TokenType.BANG;
+                    AddToken(Match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
                     break;
                 case '=':
-                    tokenType = Match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL;
+                    AddToken(Match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
                     break;
                 case '<':
-                    tokenType = Match('=') ? TokenType.LESS_EQUAL : TokenType.LESS;
+                    AddToken(Match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
                     break;
                 case '>':
-                    tokenType = Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER;
+                    AddToken(Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
                     break;
                 case '/':
                 {
@@ -85,9 +107,7 @@ namespace Cslox
                         return;
                     }
 
-                    tokenType = TokenType.SLASH;
-
-
+                    AddToken(TokenType.SLASH);
                     break;
                 }
                 case '"':
@@ -100,25 +120,45 @@ namespace Cslox
                     return;
                 case '\n':
                     _line++;
-                    break;
+                    return;
                 default:
                     if (IsDigit(ch))
                     {
                         CreateNumber();
                     }
+                    else if (IsAlpha(ch))
+                    {
+                        CreateIdentifier();
+                    }
                     else
                     {
-                        tokenType = TokenType.Unexpected;
+                        if (tokenType == TokenType.Unexpected)
+                            Error.ReportError(_source.Substring(_start, _current - _start), _line, _current,
+                                "Unexpected symbol");
                     }
 
                     break;
             }
+        }
 
-            if (tokenType == TokenType.Unexpected)
-                Error.ReportError(_source.Substring(_start, _current - _start), _line, _current,
-                    "Unexpected symbol");
-            else
-                AddToken(tokenType);
+        private void CreateIdentifier()
+        {
+            while (IsAlphaNumeric(Peek()))
+                Advance();
+
+            AddToken(_keywords.TryGetValue(CurrentLexem(), out var type) ? type : TokenType.IDENTIFIER);
+        }
+
+        private bool IsAlphaNumeric(char ch)
+        {
+            return IsAlpha(ch) || IsDigit(ch);
+        }
+
+        private bool IsAlpha(char ch)
+        {
+            return ch >= 'a' && ch <= 'z' ||
+                   ch >= 'A' && ch <= 'Z' ||
+                   ch == '_';
         }
 
         private void CreateNumber()
@@ -131,11 +171,17 @@ namespace Cslox
                 while (IsDigit(Peek())) Advance();
             }
 
-            if (double.TryParse(_source.Substring(_start, _current - _start), out var literal))
+
+            if (double.TryParse(CurrentLexem(), NumberStyles.Number, CultureInfo.InvariantCulture, out var literal))
                 AddToken(TokenType.NUMBER, literal);
             else
-                Error.ReportError(_source.Substring(_start, _current - _start), _line, _current,
+                Error.ReportError(CurrentLexem(), _line, _current,
                     "Unexpected symbol");
+        }
+
+        private string CurrentLexem()
+        {
+            return _source.Substring(_start, _current - _start);
         }
 
         private char PeekNext()
@@ -157,13 +203,14 @@ namespace Cslox
 
             if (IsAtEnd())
             {
+                //TODO fix that error lines
                 Error.ReportError(_source.Substring(_start, _source.IndexOf('\n', _start) - _start), _line, _current,
                     "Unterminated string");
                 return;
             }
 
             Advance();
-            var value = _source.Substring(_start + 1, _current - _start);
+            var value = _source.Substring(_start, _current - _start);
             AddToken(TokenType.STRING, value);
         }
 
@@ -176,7 +223,6 @@ namespace Cslox
         {
             if (IsAtEnd() || _source[_current] != expected)
                 return false;
-
             _current++;
             return true;
         }
@@ -184,7 +230,7 @@ namespace Cslox
         void AddToken(TokenType type, Object literal = null)
         {
             var text = _source.Substring(_start, _current - _start);
-            _tokens.Add(new Token(type, text, literal, _line));
+            _tokens.Add(new Token(type, text, literal));
         }
 
         private char Advance()

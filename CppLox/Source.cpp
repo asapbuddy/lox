@@ -56,7 +56,7 @@ void run(const string& source)
     auto errors = scanner.get_errors();
 
     if(!errors.empty())
-        std::for_each(errors.begin(), errors.end(), [](auto err) { err->what(cerr); });
+        std::for_each(errors.begin(), errors.end(), [](auto& err) { err->what(cerr); });
 
-    std::for_each(tokens.begin(), tokens.end(), [](auto token) { cout << token << endl; });
+    std::for_each(tokens.begin(), tokens.end(), [](auto& token) { cout << token << endl; });
 }
