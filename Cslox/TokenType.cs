@@ -1,8 +1,9 @@
 ﻿// ReSharper disable InconsistentNaming
+//TODO Rename all enums
 
 namespace Cslox
 {
-    public enum TokenType
+    internal enum SyntaxSign
     {
         LEFT_PAREN,
         RIGHT_PAREN,
@@ -14,8 +15,12 @@ namespace Cslox
         PLUS,
         SEMICOLON,
         SLASH,
-        STAR,
+        DOUBLE_QUOTE,
+        STAR
+    }
 
+    internal enum LogicSign
+    {
         BANG,
         BANG_EQUAL,
         EQUAL,
@@ -23,12 +28,18 @@ namespace Cslox
         GREATER,
         GREATER_EQUAL,
         LESS,
-        LESS_EQUAL,
+        LESS_EQUAL
+    }
 
+    internal enum LexicalSign
+    {
         IDENTIFIER,
         STRING,
         NUMBER,
+    }
 
+    internal enum LingualSign
+    {
         AND,
         CLASS,
         ELSE,
@@ -45,7 +56,13 @@ namespace Cslox
         TRUE,
         VAR,
         WHILE,
-        EOF,
-        Unexpected
+        EOF
+    }
+
+    public enum SymbolKind
+    {
+        SyntaxSign,
+        LogicSign,
+        LexicalSign
     }
 }
