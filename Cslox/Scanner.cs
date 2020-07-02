@@ -10,11 +10,18 @@ namespace Cslox
         private readonly List<Token> _tokens = new List<Token>();
         private readonly Dictionary<string, TokenType> _keywords = new Dictionary<string, TokenType>();
         private int _start = 0, _current = 0, _line = 1;
+        private readonly List<string> _errors;
 
         public Scanner(in string source)
         {
             _source = source;
+            _errors = new List<string>();
             InitKeywords();
+        }
+
+        public IEnumerable<string> GetErrors()
+        {
+            return _errors;
         }
 
         private void InitKeywords()
@@ -41,8 +48,15 @@ namespace Cslox
         {
             while (!IsAtEnd())
             {
-                _start = _current;
-                ScanToken();
+                try
+                {
+                    _start = _current;
+                    ScanToken();
+                }
+                catch (Exception e)
+                {
+                    _errors.Add($"[Scanning Error] {e.Message} at line: {_line}\n {_source.Split('\n')[_line - 1]}");
+                }
             }
 
             _tokens.Add(new Token(TokenType.EOF, "", null));
@@ -53,7 +67,6 @@ namespace Cslox
         {
             var ch = Advance();
 
-            TokenType tokenType = TokenType.Unexpected;
             switch (ch)
             {
                 case '(':
@@ -104,7 +117,31 @@ namespace Cslox
                     {
                         while (Peek() != '\n' && !IsAtEnd())
                             Advance();
-                        return;
+                        break;
+                    }
+                    else if (Match('*'))
+                    {
+                        do
+                        {
+                            Advance();
+                            if (Peek() == '\n')
+                            {
+                                ++_line;
+                                continue;
+                            }
+
+                            if (Peek() == '*')
+                            {
+                                Advance();
+                                if (Peek() == '/')
+                                {
+                                    Advance();
+                                    return;
+                                }
+                            }
+                        } while (!IsAtEnd());
+
+                        throw new Exception("Multiline comments must be closed");
                     }
 
                     AddToken(TokenType.SLASH);
@@ -132,9 +169,7 @@ namespace Cslox
                     }
                     else
                     {
-                        if (tokenType == TokenType.Unexpected)
-                            Error.ReportError(_source.Substring(_start, _current - _start), _line, _current,
-                                "Unexpected symbol");
+                        throw new Exception("Unexpected symbol");
                     }
 
                     break;
@@ -175,8 +210,7 @@ namespace Cslox
             if (double.TryParse(CurrentLexem(), NumberStyles.Number, CultureInfo.InvariantCulture, out var literal))
                 AddToken(TokenType.NUMBER, literal);
             else
-                Error.ReportError(CurrentLexem(), _line, _current,
-                    "Unexpected symbol");
+                throw new Exception("Unexpected symbol");
         }
 
         private string CurrentLexem()
@@ -190,8 +224,10 @@ namespace Cslox
             return _source[_current + 1];
         }
 
-        private bool IsDigit(char ch) => ch >= '0' && ch <= '9';
-
+        private bool IsDigit(char ch)
+        {
+            return ch >= '0' && ch <= '9';
+        }
 
         private void CreateString()
         {
@@ -203,10 +239,7 @@ namespace Cslox
 
             if (IsAtEnd())
             {
-                //TODO fix that error lines
-                Error.ReportError(_source.Substring(_start, _source.IndexOf('\n', _start) - _start), _line, _current,
-                    "Unterminated string");
-                return;
+                throw new Exception("Unterminated string");
             }
 
             Advance();
@@ -239,6 +272,9 @@ namespace Cslox
             return _source[_current - 1];
         }
 
-        private bool IsAtEnd() => _current >= _source.Length;
+        private bool IsAtEnd()
+        {
+            return _current >= _source.Length;
+        }
     }
 }

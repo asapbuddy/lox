@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Cslox
 {
@@ -41,9 +42,22 @@ namespace Cslox
         {
             Scanner scanner = new Scanner(source);
             IEnumerable<Token> tokens = scanner.ScanTokens();
-            foreach (var token in tokens)
+            var errors = scanner.GetErrors();
+            if (errors.Any())
             {
-                Console.WriteLine(token);
+                var foreground = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                foreach (var error in scanner.GetErrors())
+                    Console.WriteLine(error);
+
+                Console.ForegroundColor = foreground;
+            }
+            else
+            {
+                foreach (var token in tokens)
+                {
+                    Console.WriteLine(token);
+                }
             }
         }
     }

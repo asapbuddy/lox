@@ -1,5 +1,15 @@
 // Single line comment
-
+/* test multiline
+comments
+if they * are here
+8?
+*/
 var del=1.0
 var str = "qwerq" // test comment
 var average = (str + str)/2
+/*
+
+fewf
+
+token;
+*/
