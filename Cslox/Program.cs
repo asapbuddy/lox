@@ -40,7 +40,7 @@ namespace Cslox
         private static void Run(in string source)
         {
             Scanner scanner = new Scanner(source);
-            IEnumerable<Token> tokens = scanner.ScanTokens();
+            IEnumerable<IToken> tokens = scanner.ScanTokens();
             foreach (var token in tokens)
             {
                 Console.WriteLine(token);

@@ -36,8 +36,7 @@ namespace Cslox
             {'+', SyntaxSign.PLUS},
             {';', SyntaxSign.SEMICOLON},
             {'*', SyntaxSign.STAR},
-            {'/', SyntaxSign.SLASH},
-            {'"', SyntaxSign.DOUBLE_QUOTE}
+            {'/', SyntaxSign.SLASH}
         };
 
         private readonly Dictionary<char, LogicSign> _logic = new Dictionary<char, LogicSign>
@@ -54,7 +53,9 @@ namespace Cslox
                 return SymbolKind.LogicSign;
             if (_syntax.ContainsKey(ch))
                 return SymbolKind.SyntaxSign;
-            return SymbolKind.LexicalSign;
+            if (IsAlphaNumeric(ch))
+                return SymbolKind.LexicalSign;
+            return SymbolKind.Others;
         }
 
         public SyntaxSign GetSyntaxToken(char ch)

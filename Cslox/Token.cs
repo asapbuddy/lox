@@ -19,63 +19,8 @@ namespace Cslox
         }
     }
 
-    internal class SyntaxToken : Token
+    internal interface IToken
     {
-        private readonly SyntaxSign _type;
-
-        public SyntaxToken(SyntaxSign type, string lexem, object literal) : base(lexem, literal)
-        {
-            _type = type;
-        }
-
-        public override string ToString()
-        {
-            return $"{_type} {base.ToString()}";
-        }
-    }
-
-    internal class LogicToken : Token
-    {
-        private readonly LogicSign _type;
-
-        public LogicToken(LogicSign type, string lexem, object literal) : base(lexem, literal)
-        {
-            _type = type;
-        }
-
-        public override string ToString()
-        {
-            return $"{_type} {base.ToString()}";
-        }
-    }
-
-    internal class LexicalToken : Token
-    {
-        private readonly LexicalSign _type;
-
-        public LexicalToken(LexicalSign type, string lexem, object literal) : base(lexem, literal)
-        {
-            _type = type;
-        }
-
-        public override string ToString()
-        {
-            return $"{_type} {base.ToString()}";
-        }
-    }
-
-    internal class LingualToken : Token
-    {
-        private readonly LingualSign _type;
-
-        public LingualToken(LingualSign type, string lexem, object literal) : base(lexem, literal)
-        {
-            _type = type;
-        }
-
-        public override string ToString()
-        {
-            return $"{_type} {base.ToString()}";
-        }
+        public IToken Generate(in ForwardIterator it);
     }
 }

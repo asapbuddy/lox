@@ -6,27 +6,34 @@ namespace Cslox
 {
     internal sealed class Scanner
     {
-        private readonly string _source;
-        private readonly List<Token> _tokens = new List<Token>();
-        private int _start = 0, _current = 0, _line = 1;
+        private readonly List<IToken> _tokens = new List<IToken>();
         private readonly LookupTable _table;
+        private readonly ForwardIterator _it;
 
         public Scanner(in string source)
         {
-            _source = source;
             _table = new LookupTable();
+            _it = new ForwardIterator(source);
         }
 
-
-        public IEnumerable<Token> ScanTokens()
+        public IEnumerable<IToken> ScanTokens()
         {
-            while (!IsAtEnd())
+            while (!_it.IsAtEnd())
             {
-                _start = _current;
-                ScanToken();
+                var ch = _it.Advance();
+                var symbolKind = _table.GetSymbolKind(ch);
+                IToken currentToken = symbolKind switch
+                {
+                    SymbolKind.SyntaxSign => new SyntaxToken(),
+                    SymbolKind.LogicSign => new LogicToken(),
+                    SymbolKind.LexicalSign => new LexicalToken(),
+                    SymbolKind.Others => new LingualToken(),
+                };
+
+                _tokens.Add(currentToken.Generate(_it));
             }
 
-            _tokens.Add(new LingualToken(LingualSign.EOF, "", null));
+            _tokens.Add(new LingualToken());
             return _tokens;
         }
 
@@ -38,21 +45,37 @@ namespace Cslox
 
             if (symbolKind == SymbolKind.SyntaxSign)
             {
-                _tokens.Add(new SyntaxToken(_table.GetSyntaxToken(ch), CurrentLexem(), null));
             }
             else if (symbolKind == SymbolKind.LogicSign)
             {
                 var type = _table.GetLogicToken(ch);
-                if (Match('='))
-                    type += 1;
+                
                 _tokens.Add(new LogicToken(type, CurrentLexem(), null));
             }
             else if (symbolKind == SymbolKind.LexicalSign)
             {
-                
+                if (IsDigit(ch))
+                {
+                    CreateNumber();
+                }
+                else if (IsAlpha(ch))
+                {
+                    CreateIdentifier();
+                }
+                else
+                {
+                    Error.ReportError(CurrentLexem(), _line, _current,
+                        "Unexpected symbol");
+                }
+            }
+            else if (symbolKind == SymbolKind.Others)
+            {
+                if (ch == '\n')
+                    _line++;
             }
 
 
+/*
             if (_table.IsSpecial(ch))
             {
                 if (!_table.IsDelimiter(ch))
@@ -74,7 +97,6 @@ namespace Cslox
                 CreateNumber();
             else
                 Error.ReportError();
-
 
             switch (ch)
             {
@@ -144,22 +166,11 @@ namespace Cslox
                     _line++;
                     return;
                 default:
-                    if (IsDigit(ch))
-                    {
-                        CreateNumber();
-                    }
-                    else if (IsAlpha(ch))
-                    {
-                        CreateIdentifier();
-                    }
-                    else
-                    {
-                        Error.ReportError(CurrentLexem(), _line, _current,
-                            "Unexpected symbol");
-                    }
+                    
 
                     break;
             }
+            */
         }
 
 
@@ -208,44 +219,9 @@ namespace Cslox
                     "Unexpected symbol");
         }
 
-        private string CurrentLexem()
-        {
-            return _source.Substring(_start, _current - _start);
-        }
-
-        private char PeekNext()
-        {
-            if (_current + 1 >= _source.Length) return '\0';
-            return _source[_current + 1];
-        }
-
-        private char Peek()
-        {
-            return IsAtEnd() ? '\0' : _source[_current];
-        }
-
-        private bool Match(char expected)
-        {
-            if (IsAtEnd() || _source[_current] != expected)
-                return false;
-            _current++;
-            return true;
-        }
-
         private void AddToken<T>(T token, Object literal = null)
         {
             //_tokens.Add(new T(token, CurrentLexem(), literal));
-        }
-
-        private char Advance()
-        {
-            _current++;
-            return _source[_current - 1];
-        }
-
-        private bool IsAtEnd()
-        {
-            return _current >= _source.Length;
         }
     }
 }

@@ -14,9 +14,8 @@ namespace Cslox
         MINUS,
         PLUS,
         SEMICOLON,
-        SLASH,
-        DOUBLE_QUOTE,
-        STAR
+        STAR,
+        SLASH
     }
 
     internal enum LogicSign
@@ -63,6 +62,7 @@ namespace Cslox
     {
         SyntaxSign,
         LogicSign,
-        LexicalSign
+        LexicalSign,
+        Others
     }
 }
