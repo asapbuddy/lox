@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -7,7 +6,7 @@ namespace Cslox
 {
     internal static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length > 1)
             {
@@ -32,7 +31,7 @@ namespace Cslox
             }
         }
 
-        private static void RunFile(in String s)
+        private static void RunFile(in string s)
         {
             var sourceCode = File.ReadAllText(s);
             Run(sourceCode);
@@ -40,8 +39,8 @@ namespace Cslox
 
         private static void Run(in string source)
         {
-            Scanner scanner = new Scanner(source);
-            IEnumerable<Token> tokens = scanner.ScanTokens();
+            var scanner = new Scanner(source);
+            var tokens = scanner.ScanTokens();
             var errors = scanner.GetErrors();
             if (errors.Any())
             {

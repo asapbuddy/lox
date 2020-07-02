@@ -9,7 +9,7 @@ namespace Cslox
         private readonly string _source;
         private readonly List<Token> _tokens = new List<Token>();
         private readonly Dictionary<string, TokenType> _keywords = new Dictionary<string, TokenType>();
-        private int _start = 0, _current = 0, _line = 1;
+        private int _start, _current, _line;
         private readonly List<string> _errors;
 
         public Scanner(in string source)
@@ -26,22 +26,22 @@ namespace Cslox
 
         private void InitKeywords()
         {
-            _keywords.Add("and", TokenType.AND);
-            _keywords.Add("class", TokenType.CLASS);
-            _keywords.Add("else", TokenType.ELSE);
-            _keywords.Add("false", TokenType.FALSE);
-            _keywords.Add("for", TokenType.FOR);
-            _keywords.Add("fun", TokenType.FUN);
-            _keywords.Add("if", TokenType.IF);
-            _keywords.Add("nil", TokenType.NIL);
-            _keywords.Add("or", TokenType.OR);
-            _keywords.Add("print", TokenType.PRINT);
-            _keywords.Add("return", TokenType.RETURN);
-            _keywords.Add("super", TokenType.SUPER);
-            _keywords.Add("this", TokenType.THIS);
-            _keywords.Add("true", TokenType.TRUE);
-            _keywords.Add("var", TokenType.VAR);
-            _keywords.Add("while", TokenType.WHILE);
+            _keywords.Add("and", TokenType.And);
+            _keywords.Add("class", TokenType.Class);
+            _keywords.Add("else", TokenType.Else);
+            _keywords.Add("false", TokenType.False);
+            _keywords.Add("for", TokenType.For);
+            _keywords.Add("fun", TokenType.Fun);
+            _keywords.Add("if", TokenType.If);
+            _keywords.Add("nil", TokenType.Nil);
+            _keywords.Add("or", TokenType.Or);
+            _keywords.Add("print", TokenType.Print);
+            _keywords.Add("return", TokenType.Return);
+            _keywords.Add("super", TokenType.Super);
+            _keywords.Add("this", TokenType.This);
+            _keywords.Add("true", TokenType.True);
+            _keywords.Add("var", TokenType.Var);
+            _keywords.Add("while", TokenType.While);
         }
 
         public IEnumerable<Token> ScanTokens()
@@ -55,11 +55,11 @@ namespace Cslox
                 }
                 catch (Exception e)
                 {
-                    _errors.Add($"[Scanning Error] {e.Message} at line: {_line}\n {_source.Split('\n')[_line - 1]}");
+                    _errors.Add($"[Scanning Error] {e.Message} at line: {_line+1}\n {_source.Split('\n')[_line]}");
                 }
             }
 
-            _tokens.Add(new Token(TokenType.EOF, "", null));
+            _tokens.Add(new Token(TokenType.Eof, "", null));
             return _tokens;
         }
 
@@ -70,46 +70,46 @@ namespace Cslox
             switch (ch)
             {
                 case '(':
-                    AddToken(TokenType.LEFT_PAREN);
+                    AddToken(TokenType.LeftParen);
                     break;
                 case ')':
-                    AddToken(TokenType.RIGHT_PAREN);
+                    AddToken(TokenType.RightParen);
                     break;
                 case '{':
-                    AddToken(TokenType.LEFT_BRACE);
+                    AddToken(TokenType.LeftBrace);
                     break;
                 case '}':
-                    AddToken(TokenType.RIGHT_BRACE);
+                    AddToken(TokenType.RightBrace);
                     break;
                 case ',':
-                    AddToken(TokenType.COMMA);
+                    AddToken(TokenType.Comma);
                     break;
                 case '.':
-                    AddToken(TokenType.DOT);
+                    AddToken(TokenType.Dot);
                     break;
                 case '-':
-                    AddToken(TokenType.MINUS);
+                    AddToken(TokenType.Minus);
                     break;
                 case '+':
-                    AddToken(TokenType.PLUS);
+                    AddToken(TokenType.Plus);
                     break;
                 case ';':
-                    AddToken(TokenType.SEMICOLON);
+                    AddToken(TokenType.Semicolon);
                     break;
                 case '*':
-                    AddToken(TokenType.STAR);
+                    AddToken(TokenType.Star);
                     break;
                 case '!':
-                    AddToken(Match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+                    AddToken(Match('=') ? TokenType.BangEqual : TokenType.Bang);
                     break;
                 case '=':
-                    AddToken(Match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+                    AddToken(Match('=') ? TokenType.EqualEqual : TokenType.Equal);
                     break;
                 case '<':
-                    AddToken(Match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+                    AddToken(Match('=') ? TokenType.LessEqual : TokenType.Less);
                     break;
                 case '>':
-                    AddToken(Match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+                    AddToken(Match('=') ? TokenType.GreaterEqual : TokenType.Greater);
                     break;
                 case '/':
                 {
@@ -119,7 +119,8 @@ namespace Cslox
                             Advance();
                         break;
                     }
-                    else if (Match('*'))
+
+                    if (Match('*'))
                     {
                         do
                         {
@@ -144,7 +145,7 @@ namespace Cslox
                         throw new Exception("Multiline comments must be closed");
                     }
 
-                    AddToken(TokenType.SLASH);
+                    AddToken(TokenType.Slash);
                     break;
                 }
                 case '"':
@@ -181,15 +182,15 @@ namespace Cslox
             while (IsAlphaNumeric(Peek()))
                 Advance();
 
-            AddToken(_keywords.TryGetValue(CurrentLexem(), out var type) ? type : TokenType.IDENTIFIER);
+            AddToken(_keywords.TryGetValue(CurrentLexem(), out var type) ? type : TokenType.Identifier);
         }
 
-        private bool IsAlphaNumeric(char ch)
+        private static bool IsAlphaNumeric(char ch)
         {
             return IsAlpha(ch) || IsDigit(ch);
         }
 
-        private bool IsAlpha(char ch)
+        private static bool IsAlpha(char ch)
         {
             return ch >= 'a' && ch <= 'z' ||
                    ch >= 'A' && ch <= 'Z' ||
@@ -208,7 +209,7 @@ namespace Cslox
 
 
             if (double.TryParse(CurrentLexem(), NumberStyles.Number, CultureInfo.InvariantCulture, out var literal))
-                AddToken(TokenType.NUMBER, literal);
+                AddToken(TokenType.Number, literal);
             else
                 throw new Exception("Unexpected symbol");
         }
@@ -220,11 +221,10 @@ namespace Cslox
 
         private char PeekNext()
         {
-            if (_current + 1 >= _source.Length) return '\0';
-            return _source[_current + 1];
+            return _current + 1 >= _source.Length ? '\0' : _source[_current + 1];
         }
 
-        private bool IsDigit(char ch)
+        private static bool IsDigit(char ch)
         {
             return ch >= '0' && ch <= '9';
         }
@@ -244,7 +244,7 @@ namespace Cslox
 
             Advance();
             var value = _source.Substring(_start, _current - _start);
-            AddToken(TokenType.STRING, value);
+            AddToken(TokenType.String, value);
         }
 
         private char Peek()
@@ -260,7 +260,7 @@ namespace Cslox
             return true;
         }
 
-        void AddToken(TokenType type, Object literal = null)
+        private void AddToken(TokenType type, object literal = null)
         {
             var text = _source.Substring(_start, _current - _start);
             _tokens.Add(new Token(type, text, literal));

@@ -1,12 +1,10 @@
-﻿using System;
-
-namespace Cslox
+﻿namespace Cslox
 {
     internal class Token
     {
         private readonly TokenType _type;
         private readonly string _lexem;
-        private readonly Object _literal;
+        private readonly object _literal;
 
         public Token(TokenType type, string lexem, object literal)
         {
@@ -15,6 +13,6 @@ namespace Cslox
             _literal = literal;
         }
 
-        public override string ToString() => $"{_type} {_lexem}";
+        public override string ToString() => $"{_type} {_lexem} ";
     }
 }
