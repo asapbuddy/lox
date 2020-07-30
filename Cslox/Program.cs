@@ -33,8 +33,16 @@ namespace Cslox
 
         private static void RunFile(in string s)
         {
-            var sourceCode = File.ReadAllText(s);
-            Run(sourceCode);
+            try
+            {
+                // Todo redesign to IEnumerable
+                var sourceCode = File.ReadAllText(s);
+                Run(sourceCode);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private static void Run(in string source)
@@ -46,7 +54,7 @@ namespace Cslox
             {
                 var foreground = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.Red;
-                foreach (var error in scanner.GetErrors())
+                foreach (var error in errors)
                     Console.WriteLine(error);
 
                 Console.ForegroundColor = foreground;

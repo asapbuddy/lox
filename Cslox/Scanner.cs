@@ -9,8 +9,8 @@ namespace Cslox
         private readonly string _source;
         private readonly List<Token> _tokens = new List<Token>();
         private readonly Dictionary<string, TokenType> _keywords = new Dictionary<string, TokenType>();
-        private int _start, _current, _line;
         private readonly List<string> _errors;
+        private int _start, _current, _line;
 
         public Scanner(in string source)
         {
@@ -19,7 +19,7 @@ namespace Cslox
             InitKeywords();
         }
 
-        public IEnumerable<string> GetErrors()
+        public IReadOnlyList<string> GetErrors()
         {
             return _errors;
         }
@@ -44,7 +44,7 @@ namespace Cslox
             _keywords.Add("while", TokenType.While);
         }
 
-        public IEnumerable<Token> ScanTokens()
+        public IReadOnlyList<Token> ScanTokens()
         {
             while (!IsAtEnd())
             {
@@ -55,7 +55,7 @@ namespace Cslox
                 }
                 catch (Exception e)
                 {
-                    _errors.Add($"[Scanning Error] {e.Message} at line: {_line+1}\n {_source.Split('\n')[_line]}");
+                    _errors.Add($"[Scanning Error] {e.Message} at line: {_line + 1}\n {_source.Split('\n')[_line]}");
                 }
             }
 

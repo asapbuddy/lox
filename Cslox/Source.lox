@@ -14,7 +14,7 @@ nested
 * /
 
 token;
-*/
+/
 
 var test_after_nest = 1;
 /*
