@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cslox", "Cslox\Cslox.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AstGenerator", "AstGenerator\AstGenerator.csproj", "{4B012E10-2136-4EB6-B821-073801E1FA29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsLoxTests", "CsLoxTests\CsLoxTests.csproj", "{96F9C084-A99C-4E27-AACA-1FCB14A26782}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{4B012E10-2136-4EB6-B821-073801E1FA29}.Release|x64.Build.0 = Release|Any CPU
 		{4B012E10-2136-4EB6-B821-073801E1FA29}.Release|x86.ActiveCfg = Release|Any CPU
 		{4B012E10-2136-4EB6-B821-073801E1FA29}.Release|x86.Build.0 = Release|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Debug|x64.Build.0 = Debug|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Debug|x86.Build.0 = Debug|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Release|x64.ActiveCfg = Release|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Release|x64.Build.0 = Release|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Release|x86.ActiveCfg = Release|Any CPU
+		{96F9C084-A99C-4E27-AACA-1FCB14A26782}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,18 +1,18 @@
 ﻿namespace Cslox
 {
-    internal class Token
+    public class Token
     {
-        private readonly TokenType _type;
-        private readonly string _lexem;
-        private readonly object _literal;
+        public TokenType Type;
+        public string Lexem;
+        public object Literal;
 
         public Token(TokenType type, string lexem, object literal)
         {
-            _type = type;
-            _lexem = lexem;
-            _literal = literal;
+            Type = type;
+            Lexem = lexem;
+            Literal = literal;
         }
 
-        public override string ToString() => $"{_type} {_lexem} ";
+        public override string ToString() => $"{Type} {Lexem} ";
     }
 }

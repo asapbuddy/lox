@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Cslox
 {
-    abstract class Expr
+    public abstract class Expr
     {
         public interface IVisitor<T>
         {
@@ -17,7 +17,7 @@ namespace Cslox
 
         public class Binary : Expr
         {
-            Binary(Expr Left, Token Oper, Expr Right)
+            public Binary(Expr Left, Token Oper, Expr Right)
             {
                 this.Left = Left;
                 this.Oper = Oper;
@@ -32,7 +32,7 @@ namespace Cslox
 
         public class Grouping : Expr
         {
-            Grouping(Expr Expression)
+            public Grouping(Expr Expression)
             {
                 this.Expression = Expression;
             }
@@ -43,7 +43,7 @@ namespace Cslox
 
         public class Literal : Expr
         {
-            Literal(object value)
+            public Literal(object value)
             {
                 this.value = value;
             }
@@ -54,7 +54,7 @@ namespace Cslox
 
         public class Unary : Expr
         {
-            Unary(Token Oper, Expr Right)
+            public Unary(Token Oper, Expr Right)
             {
                 this.Oper = Oper;
                 this.Right = Right;
