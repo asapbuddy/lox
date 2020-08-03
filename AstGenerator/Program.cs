@@ -34,8 +34,6 @@ namespace AstGenerator
             var path = $"{outputDir}/{baseClass}.cs";
             var lines = new List<string>
             {
-                "using System;",
-                "using System.Collections.Generic;",
                 "namespace Cslox{",
                 $"abstract class {baseClass}{{",
             };

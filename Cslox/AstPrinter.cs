@@ -6,12 +6,12 @@
 
         public string VisitBinaryExpr(Expr.Binary expr)
         {
-            return parenthesize(expr.Oper.Lexem, expr.Left, expr.Right);
+            return Parenthesize(expr.Oper.Lexem, expr.Left, expr.Right);
         }
 
         public string VisitGroupingExpr(Expr.Grouping expr)
         {
-            return parenthesize("group", expr.Expression);
+            return Parenthesize("group", expr.Expression);
         }
 
         public string VisitLiteralExpr(Expr.Literal expr)
@@ -21,11 +21,11 @@
 
         public string VisitUnaryExpr(Expr.Unary expr)
         {
-            return parenthesize(expr.Oper.Lexem, expr.Right);
+            return Parenthesize(expr.Oper.Lexem, expr.Right);
         }
 
 
-        private string parenthesize(string name, params Expr[] exprs)
+        private string Parenthesize(string name, params Expr[] exprs)
         {
             var result = $"({name}";
             foreach (var expr in exprs)
