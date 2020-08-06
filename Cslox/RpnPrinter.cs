@@ -1,12 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace Cslox
+﻿namespace Cslox
 {
     public class RpnPrinter : Expr.IVisitor<string>
     {
-        private Stack<string> _stack = new Stack<string>();
-
         public string Print(Expr expr) => expr.accept(this);
 
         public string VisitBinaryExpr(Expr.Binary expr)
