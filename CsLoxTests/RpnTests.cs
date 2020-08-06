@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Cslox;
 using NUnit.Framework;
 using static Cslox.Expr;
 
 namespace CsLoxTests
 {
-    public class Tests
+    public class RpnTests
     {
         [SetUp]
         public void Setup()
@@ -13,23 +13,7 @@ namespace CsLoxTests
         }
 
         [Test]
-        public void AstPrinterTest()
-        {
-            Expr expression = new Binary(
-                new Unary(
-                    new Token(TokenType.Minus, "-", null),
-                    new Literal(123)),
-                new Token(TokenType.Star, "*", null),
-                new Grouping(
-                    new Literal(45.67)));
-            var result = new AstPrinter().Print(expression);
-
-            Assert.AreEqual(result, "(* (- 123) (group 45,67))");
-            Console.WriteLine(result);
-        }
-
-        [Test]
-        public void RpnPrinterTest()
+        public void PrinterTest()
         {
             var expression = new Binary
             (
@@ -53,5 +37,21 @@ namespace CsLoxTests
             Assert.AreEqual(result, "1 2 + 4 3 - *");
             Console.WriteLine(expression);
         }
-    };
+
+        [Test]
+        public void ConsiderTheSum()
+        {
+            var sumSixTwo = new Binary(new Literal(6), new Token(TokenType.Plus, "+", null), new Literal(2));
+            var productSumSixTwo = new Binary(new Literal(3), new Token(TokenType.Star, "*", null), sumSixTwo);
+            var diffProduct = new Binary(productSumSixTwo, new Token(TokenType.Minus, "-", null), new Literal(4));
+            var leftGroup = new Grouping(diffProduct);
+            var sumThreeSeven = new Binary(new Literal(3), new Token(TokenType.Plus, "+", null), new Literal(7));
+            var final = new Binary(leftGroup, new Token(TokenType.Slash, "/", null), sumThreeSeven);
+
+            var result = new RpnPrinter().Print(final);
+
+            Assert.AreEqual(result, "3 6 2 + * 4 - 3 7 + /");
+            Console.WriteLine(result);
+        }
+    }
 }
