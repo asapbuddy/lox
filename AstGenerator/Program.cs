@@ -26,10 +26,10 @@ namespace AstGenerator
                 $"Literal : object value",
                 $"Unary : Token Oper, {baseClass} Right"
             };
-            defineAst(outputDir, "Expr", childs.AsReadOnly());
+            DefineAst(outputDir, "Expr", childs.AsReadOnly());
         }
 
-        private static void defineAst(string outputDir, string baseClass, ReadOnlyCollection<string> childs)
+        private static void DefineAst(string outputDir, string baseClass, ReadOnlyCollection<string> childs)
         {
             var path = $"{outputDir}/{baseClass}.cs";
             var lines = new List<string>
